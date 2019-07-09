@@ -1,4 +1,4 @@
-name: ${project.name}
+name: NoCheatPlus
 version: ${project.version}-s${BUILD_SERIES}-b${BUILD_NUMBER}
 description: ${project.description}
 
@@ -7,8 +7,8 @@ authors: [asofold, Evenprime]
 website: ${project.url}
 dev-url: ${project.url}
 
-main: ${project.groupId}.${project.artifactId}.${project.name}
-api-version: 1.13
+main: fr.neatmonster.nocheatplus.NoCheatPlus
+api-version: '1.13'
 
 softdepend:
 - ProtocolLib
@@ -42,8 +42,6 @@ permissions:
     nocheatplus.checks.blockbreak.frequency.silent:
         default: false
     nocheatplus.checks.blockbreak.noswing.silent:
-        default: false
-    nocheatplus.checks.blockbreak.reach.silent:
         default: false
     nocheatplus.checks.blockbreak.wrongblock.silent:
         default: false
@@ -407,12 +405,10 @@ permissions:
     nocheatplus.command:
         description: "All command permissions, do not give lightly - if in doubt use shortcut permissions for moderators (nocheatplus.shortcut.monitor|safeadmin ...)."
         children:
-            nocheatplus.filter.command.nocheatplus: true
             nocheatplus.command.notify:
                 description: Allow toggling notifications.
                 children:
                     nocheatplus.notify: true
-            nocheatplus.filter.command.nocheatplus: true
             nocheatplus.command.reload:
                 description: Allow the player to reload NoCheatPlus configuration.
                 children:
