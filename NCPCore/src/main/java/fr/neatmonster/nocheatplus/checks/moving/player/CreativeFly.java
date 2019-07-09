@@ -18,6 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import fr.neatmonster.nocheatplus.compat.Bridge1_13;
+import fr.neatmonster.nocheatplus.utilities.PotionUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -43,6 +45,7 @@ import fr.neatmonster.nocheatplus.players.IPlayerData;
 import fr.neatmonster.nocheatplus.utilities.StringUtil;
 import fr.neatmonster.nocheatplus.utilities.location.PlayerLocation;
 import fr.neatmonster.nocheatplus.utilities.location.TrigUtil;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * A check designed for people that are allowed to fly. The complement to the "SurvivalFly", which is for people that
@@ -320,6 +323,10 @@ public class CreativeFly extends Check {
         }
 
         double limitH = model.getHorizontalModSpeed() / 100.0 * ModelFlying.HORIZONTAL_SPEED * fSpeed;
+        if (model.getScaleSlowfallingEffect() && Bridge1_13.hasSlowfalling()) {
+            double amplifier = PotionUtil.getPotionEffectAmplifier(from.getPlayer(), PotionEffectType.SPEED);
+            limitH = Double.isInfinite(amplifier) ? limitH : limitH + 0.1*(amplifier +1);
+        }
 
         if (lastMove.toIsValid) {
             // TODO: Use last friction (as well)?
@@ -378,6 +385,9 @@ public class CreativeFly extends Check {
                 // TODO: Perhaps do with a modifier instead, to avoid confusion.
                 limitV += 0.046 * levitation; // (It ends up like 0.5 added extra for some levels of levitation, roughly.)
                 tags.add("levitation:" + levitation);
+            } else if (model.getScaleSlowfallingEffect() && Bridge1_13.hasSlowfalling()) {
+                double amplifier = PotionUtil.getPotionEffectAmplifier(from.getPlayer(), PotionEffectType.JUMP);
+                limitV += Double.isInfinite(amplifier) ? 0.5 : 0.5 + 0.1*(amplifier +1);
             }
         }
 

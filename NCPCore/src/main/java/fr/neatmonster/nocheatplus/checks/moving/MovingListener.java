@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import fr.neatmonster.nocheatplus.compat.*;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -81,11 +82,6 @@ import fr.neatmonster.nocheatplus.checks.moving.velocity.AccountEntry;
 import fr.neatmonster.nocheatplus.checks.moving.velocity.SimpleEntry;
 import fr.neatmonster.nocheatplus.checks.moving.velocity.VelocityFlags;
 import fr.neatmonster.nocheatplus.checks.net.NetData;
-import fr.neatmonster.nocheatplus.compat.Bridge1_9;
-import fr.neatmonster.nocheatplus.compat.BridgeEnchant;
-import fr.neatmonster.nocheatplus.compat.BridgeHealth;
-import fr.neatmonster.nocheatplus.compat.BridgeMisc;
-import fr.neatmonster.nocheatplus.compat.MCAccess;
 import fr.neatmonster.nocheatplus.compat.blocks.changetracker.BlockChangeTracker;
 import fr.neatmonster.nocheatplus.compat.blocks.changetracker.BlockChangeTracker.BlockChangeEntry;
 import fr.neatmonster.nocheatplus.compat.blocks.changetracker.BlockChangeTracker.Direction;
@@ -711,8 +707,8 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
         data.velocityTick(tick - cc.velocityActivationTicks);
 
         // Check which fly check to use.
-        final boolean checkCf;
-        final boolean checkSf;
+        boolean checkCf;
+        boolean checkSf;
         if (MovingUtil.shouldCheckSurvivalFly(player, pFrom, data, cc, pData)) {
             checkCf = false;
             checkSf = true;
@@ -842,6 +838,11 @@ public class MovingListener extends CheckListener implements TickListener, IRemo
                 // Check if to skip the nofall check.
                 mightSkipNoFall = true;
             }
+        }
+
+        // Force to check survivalfly, not creativefly anymore
+        if (Bridge1_13.isRiptiding(player)) {
+            {checkSf = true; checkCf = false;}
         }
 
         // Flying checks.

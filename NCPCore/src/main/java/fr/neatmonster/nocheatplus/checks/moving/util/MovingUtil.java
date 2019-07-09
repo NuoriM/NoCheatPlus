@@ -16,6 +16,7 @@ package fr.neatmonster.nocheatplus.checks.moving.util;
 
 import java.util.UUID;
 
+import fr.neatmonster.nocheatplus.compat.Bridge1_13;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -95,6 +96,9 @@ public class MovingUtil {
                 && (
                         Double.isInfinite(Bridge1_9.getLevitationAmplifier(player)) 
                         || fromLocation.isInLiquid()
+                        )
+                && (
+                        Double.isInfinite(Bridge1_13.getSlowfallingAmplifier(player))
                         )
                 ;
     }
