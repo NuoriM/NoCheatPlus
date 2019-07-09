@@ -17,6 +17,7 @@ package fr.neatmonster.nocheatplus.checks.blockplace;
 import java.util.List;
 import java.util.Set;
 
+import fr.neatmonster.nocheatplus.compat.BridgeMaterial;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -217,11 +218,11 @@ public class BlockPlaceListener extends CheckListener {
             shouldSkipSome = false;
         }
 
-        if (placedMat == Material.SIGN) {
+        if (MaterialUtil.WOODEN_SIGNS.contains(placedMat) || MaterialUtil.WOODEN_WALL_SIGNS.contains(placedMat)) {
             // Might move to MONITOR priority.
             data.autoSignPlacedTime = System.currentTimeMillis();
             // Always hash as sign post for improved compatibility with Lockette etc.
-            data.autoSignPlacedHash = getBlockPlaceHash(block, Material.SIGN);
+            data.autoSignPlacedHash = getBlockPlaceHash(block, BridgeMaterial.SIGN);
         }
 
         // Don't run checks, if a set back is scheduled.

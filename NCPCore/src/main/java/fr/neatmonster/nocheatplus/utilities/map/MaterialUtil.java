@@ -449,6 +449,20 @@ public class MaterialUtil {
                     "legacy"
                     ), "wool"));
 
+    public static final Set<Material> WOODEN_SIGNS = Collections.unmodifiableSet(addBlocks(
+            BridgeMaterial.getByPrefixAndSuffix(
+                    woodTypes,
+                    Arrays.asList("_sign"),
+                    AlmostBoolean.YES
+            ), "sign", "sign_post"));
+
+    public static final Set<Material> WOODEN_WALL_SIGNS = Collections.unmodifiableSet(addBlocks(
+            BridgeMaterial.getByPrefixAndSuffix(
+                    woodTypes,
+                    Arrays.asList("_wall_sign"),
+                    AlmostBoolean.YES
+            ), "wall_sign"));
+
     ///////////////////////////////
     // Collections of collections
     ///////////////////////////////

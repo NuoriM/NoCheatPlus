@@ -1,14 +1,31 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>fr.neatmonster</groupId>
 	<artifactId>nocheatplus-parent</artifactId>
+	<version>3.16.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<version>1.1-SNAPSHOT</version>
+
 	<name>NoCheatPlus Parent</name>
+	<description>Detect and fight the exploitation of various flaws/bugs in Minecraft.</description>
 	<url>https://dev.bukkit.org/projects/nocheatplus</url>
+	<inceptionYear>2011</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>The GNU General Public Licence version 3 (GPLv3)</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<properties>
+		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.build.timestamp.format>yyyy_MM_dd-HH_mm</maven.build.timestamp.format>
 		<buildTimestamp>${maven.build.timestamp}</buildTimestamp>
 		<BUILD_NUMBER>?</BUILD_NUMBER>
@@ -23,10 +40,121 @@
 		<module>NCPCompatBukkit</module>
 		<module>NCPCompatProtocolLib</module>
 		<module>NCPPlugin</module>
-		<module>NoCheatPlus</module>
 	</modules>
 
-	<!-- Profiles for enabling/disabling features. -->
+	<repositories>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.spigotmc</groupId>
+				<artifactId>spigot-api</artifactId>
+				<version>1.14.3-R0.1-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.2</version>
+					<configuration>
+						<!-- Don't trim stack traces -->
+						<trimStackTrace>false</trimStackTrace>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.1.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.1.0</version>
+					<configuration>
+						<source>${java.version}</source>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.2.1</version>
+					<configuration>
+						<filters>
+							<!-- Ignore manifest signatures for shading the project into an uber-jar to fix -->
+							<!-- "Invalid signature file digest for Manifest main attributes" -->
+							<filter>
+								<artifact>*:*</artifact>
+								<excludes>
+									<exclude>META-INF/*.SF</exclude>
+									<exclude>META-INF/*.DSA</exclude>
+									<exclude>META-INF/*.RSA</exclude>
+								</excludes>
+							</filter>
+						</filters>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+					<configuration>
+						<!-- Don't deploy modules by default -->
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<!--
 	<profiles>
 		<profile>
 			<id>nonfree_build</id>
@@ -36,48 +164,6 @@
 			</modules>
 		</profile>
 	</profiles>
-
-	<repositories>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
-		</repository>
-		<!-- <repository> <id>md_5-releases</id> <url>http://repo.md-5.net/content/repositories/releases/</url> 
-			</repository> <repository> <id>md_5-snapshots</id> <url>http://repo.md-5.net/content/repositories/snapshots/</url> 
-			</repository> -->
-		<repository>
-			<id>bukkit</id>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
-		</repository>
-	</repositories>
-
-	<description>The initial pom design had been taken from mbax (GitHub).
-
-The naming of the native compatibility modules mostly follows NCPCompat + shortcut of server mod name + earliest build/version that the module would run with (though it should be compiled with the latest available build rather, latest build also can be used, if it is the first module depicting an API incompatibility transition).
-
-NCPCompatBukkit provides compatibility for the Bukkit-API only (no native module available), aiming at keeping NCP up for a new MC version for if no native module is available . Tendency is to use the latest Bukkit version rather, but since it is used for some &quot;unknown mods&quot; as well, it is not compiled with the latest Bukkit version always.
-
-TODO: Better place for descriptions like this?</description>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	-->
 
 </project>

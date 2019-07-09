@@ -1109,17 +1109,19 @@ public class BlockProperties {
 
         // Not ground (!).
         for (final Material mat : new Material[]{
-                Material.WALL_SIGN, BridgeMaterial.SIGN,
+                BridgeMaterial.WALL_SIGN, BridgeMaterial.SIGN,
         }) {
-            // TODO: Might keep solid since it is meant to be related to block shapes rather ("original mc value").
-            maskFlag(mat, ~(F_GROUND | F_SOLID));
+            if(mat != null) {
+                // TODO: Might keep solid since it is meant to be related to block shapes rather ("original mc value").
+                maskFlag(mat, ~(F_GROUND | F_SOLID));
+            }
         }
 
         // Ignore for passable.
         for (final Material mat : new Material[]{
                 // More strictly needed.
-                BridgeMaterial.STONE_PRESSURE_PLATE, 
-                Material.WALL_SIGN, BridgeMaterial.SIGN,
+                BridgeMaterial.STONE_PRESSURE_PLATE,
+                BridgeMaterial.WALL_SIGN, BridgeMaterial.SIGN,
                 BridgeMaterial.get("DIODE_BLOCK_ON"), 
                 BridgeMaterial.get("DIODE_BLOCK_OFF"),
                 Material.BREWING_STAND,
@@ -1352,7 +1354,9 @@ public class BlockProperties {
         }
         setBlock(Material.NOTE_BLOCK, new BlockProps(woodAxe, 0.8f, secToMs(1.2, 0.6, 0.3, 0.2, 0.15, 0.1)));
         final BlockProps pumpkinType = new BlockProps(woodAxe, 1, secToMs(1.5, 0.75, 0.4, 0.25, 0.2, 0.15));
-        setBlock(Material.WALL_SIGN, pumpkinType);
+        if(BridgeMaterial.WALL_SIGN != null) {
+            setBlock(BridgeMaterial.WALL_SIGN, pumpkinType);
+        }
         setBlock(BridgeMaterial.SIGN, pumpkinType);
         setBlock(Material.PUMPKIN, pumpkinType);
         setBlock(Material.JACK_O_LANTERN, pumpkinType);

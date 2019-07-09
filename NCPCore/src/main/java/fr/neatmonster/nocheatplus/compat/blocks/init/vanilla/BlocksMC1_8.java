@@ -48,10 +48,12 @@ public class BlocksMC1_8 implements BlockPropertiesSetup {
                 Material.PUMPKIN,
                 Material.JACK_O_LANTERN,
                 // Same core breaking times, but behave different on efficiency + other tool (?): 
-                Material.WALL_SIGN,
+                BridgeMaterial.WALL_SIGN,
                 BridgeMaterial.SIGN,
         }) {
-            BlockProperties.setBlockProps(mat, props);
+            if(mat != null) {
+                BlockProperties.setBlockProps(mat, props);
+            }
         }
 
         // Ladder.

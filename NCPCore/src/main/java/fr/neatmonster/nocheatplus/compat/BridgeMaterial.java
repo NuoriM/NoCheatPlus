@@ -276,7 +276,8 @@ public class BridgeMaterial {
             "repeating_command_block", "command_repeating");
 
     /** Sign block. */
-    public static final Material SIGN = getFirstNotNull("sign_post", "sign");
+    public static final Material SIGN = getFirstNotNull("sign_post", "sign", "oak_sign");
+    public static final Material WALL_SIGN = getFirst("wall_sign", "oak_wall_sign");
 
     /** Some skull for reference. */
     public static final Material SKELETON_SKULL = getFirst("skeleton_skull", "skull");
