@@ -37,6 +37,17 @@ public class BlocksMC1_13 implements BlockPropertiesSetup {
     @Override
     public void setupBlockProperties(WorldConfigProvider<?> worldConfigProvider) {
 
+        // 1.13 hotfixes TODO: not sure about those
+        // Remove flag for these blocks
+        BlockFlags.removeFlags("TALL_SEAGRASS", BlockProperties.F_GROUND_HEIGHT | BlockProperties.F_GROUND);
+        BlockFlags.removeFlags("SEAGRASS", BlockProperties.F_GROUND_HEIGHT | BlockProperties.F_GROUND);
+        BlockFlags.removeFlags("KELP_PLANT", BlockProperties.F_GROUND_HEIGHT | BlockProperties.F_GROUND);
+        // Add flag for anvil
+        BlockFlags.addFlags("ANVIL", BlockProperties.F_GROUND_HEIGHT | BlockProperties.F_GROUND);
+        // Change flag for walls
+        BlockFlags.addFlags("COBBLESTONE_WALL", BlockProperties.F_THICK_WALL);
+        BlockFlags.removeFlags("COBBLESTONE_WALL", BlockProperties.F_THICK_FENCE);
+
         // Void air.
         BlockInit.setAs("VOID_AIR", Material.AIR);
         // Cave air.

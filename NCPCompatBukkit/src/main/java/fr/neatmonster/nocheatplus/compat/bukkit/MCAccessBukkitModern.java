@@ -16,26 +16,13 @@ package fr.neatmonster.nocheatplus.compat.bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import fr.neatmonster.nocheatplus.compat.bukkit.model.*;
 import org.bukkit.Material;
 
 import fr.neatmonster.nocheatplus.compat.BridgeMaterial;
 import fr.neatmonster.nocheatplus.compat.blocks.init.BlockInit;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitChorusPlant;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitCocoa;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitDirectionalCentered;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitDoor;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitEndPortalFrame;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitFence;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitGate;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitSeaPickle;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitShapeModel;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitShulkerBox;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitSlab;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitStairs;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitStatic;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitTrapDoor;
-import fr.neatmonster.nocheatplus.compat.bukkit.model.BukkitTurtleEgg;
 import fr.neatmonster.nocheatplus.config.WorldConfigProvider;
 import fr.neatmonster.nocheatplus.utilities.map.BlockCache;
 import fr.neatmonster.nocheatplus.utilities.map.BlockFlags;
@@ -61,6 +48,7 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
     private static final BukkitShapeModel MODEL_TURTLE_EGG = new BukkitTurtleEgg();
 
     // Blocks that have a different shape, based on how they have been placed.
+    private static final BukkitShapeModel MODEL_ANVIL = new BukkitAnvil();
     private static final BukkitShapeModel MODEL_SLAB = new BukkitSlab();
     private static final BukkitShapeModel MODEL_STAIRS= new BukkitStairs();
     private static final BukkitShapeModel MODEL_END_ROD = new BukkitDirectionalCentered(
@@ -71,6 +59,8 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
             0.4375, 1.0);
     private static final BukkitShapeModel MODEL_THICK_FENCE = new BukkitFence(
             0.375, 1.5);
+    private static final BukkitShapeModel MODEL_THICK_FENCE2 = new BukkitFence(
+            0.25, 1.5);
     // .75 .25 0 max: .25 .75 .5
     private static final BukkitShapeModel MODEL_WALL_HEAD = new BukkitStatic(
     		0.75, 0.25, 0.0, 0.25, 0.75, 0.5);
@@ -87,6 +77,8 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
             0.25, 0.5); // TODO: XZ-really? 275 ?
     private static final BukkitShapeModel MODEL_SINGLE_CHEST = new BukkitStatic(
             0.062, .875); // TODO: 0.0625?
+    private static final BukkitShapeModel MODEL_LANTERN = new BukkitStatic(
+            0.33, 0.5625);
 
     // Static blocks with full height sorted by inset.
     private static final BukkitShapeModel MODEL_INSET16_1_HEIGHT100 = new BukkitStatic(
@@ -176,12 +168,18 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
                 Material.BEACON,
                 Material.LADDER,
                 Material.VINE,
-                Material.ANVIL,
-                Material.CHIPPED_ANVIL,
-                Material.DAMAGED_ANVIL,
                 Material.CHORUS_FLOWER
         }) {
             processedBlocks.add(mat);
+        }
+
+        // Anvil
+        for (Material mat : new Material[] {
+                Material.ANVIL,
+                Material.CHIPPED_ANVIL,
+                Material.DAMAGED_ANVIL
+        }) {
+            addModel(mat, MODEL_ANVIL);
         }
 
         // Lily pad
@@ -330,6 +328,10 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
         	addModel(mat, MODEL_CHORUS_PLANT);
         }
 
+        // Lantern
+        Optional.ofNullable(BridgeMaterial.getBlock("lantern"))
+                .ifPresent((mat) -> addModel(mat, MODEL_LANTERN));
+
         // Sort to processed by flags.
         for (final Material mat : Material.values()) {
             final long flags = BlockProperties.getBlockFlags(mat);
@@ -337,7 +339,7 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
             if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_STAIRS)) {
                 addModel(mat, MODEL_STAIRS);
             }
-            // Fences, cobblestone wall.
+            // Fences.
             if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_THICK_FENCE)) {
                 if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_PASSABLE_X4)) {
                     // TODO: Perhaps another model flag.
@@ -346,6 +348,10 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
                 else {
                     addModel(mat, MODEL_THICK_FENCE);
                 }
+            }
+            // Walls
+            if (BlockFlags.hasAnyFlag(flags, BlockProperties.F_THICK_WALL)) {
+                addModel(mat, MODEL_THICK_FENCE2);
             }
         }
 

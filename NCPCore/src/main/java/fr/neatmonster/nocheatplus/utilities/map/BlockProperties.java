@@ -359,9 +359,7 @@ public class BlockProperties {
     public static class BlockBreakKey {
 
         private Material blockType = null;
-        @SuppressWarnings("unused")
         private ToolType toolType = null;
-        @SuppressWarnings("unused")
         private MaterialBase materialBase = null;
 
         /** Efficiency enchantment. */
@@ -676,6 +674,8 @@ public class BlockProperties {
     public static final long F_HEIGHT100                    = f_flag();
     /** Climbable like ladder and vine (allow to land on without taking damage). */
     public static final long F_CLIMBABLE                    = f_flag();
+    /** Climbable upwards. */
+    public static final long F_CLIMBUPABLE                  = f_flag();
     public static final long F_CLIMBLIQ                     = f_flag();
     /** The block can change shape. This is most likely not 100% accurate... */
     public static final long F_VARIABLE                     = f_flag();
@@ -734,6 +734,9 @@ public class BlockProperties {
     /** Thick fence (default wooden fence). */
     public static final long F_THICK_FENCE                  = f_flag();
 
+    /** Thick fence (default cobblestone wall). */
+    public static final long F_THICK_WALL                   = f_flag();
+
     /** Fence gate style with 0x04 being fully passable. */
     public static final long F_PASSABLE_X4                  = f_flag();
 
@@ -781,6 +784,12 @@ public class BlockProperties {
     public static final long F_MIN_HEIGHT16_15              = f_flag();
 
     /**
+     * Minimum height 14/16 (8750). <br>
+     * Only applies with F_GROUND_HEIGHT set.
+     */
+    public static final long F_MIN_HEIGHT16_14              = f_flag();
+
+    /**
      * Minimum height 13/16 (8125). <br>
      * Only applies with F_GROUND_HEIGHT set.
      */
@@ -793,6 +802,18 @@ public class BlockProperties {
     public static final long F_MIN_HEIGHT16_11              = f_flag();
 
     /**
+     * Minimum height 9/16 (0.5625). <br>
+     * Only applies with F_GROUND_HEIGHT set.
+     */
+    public static final long F_MIN_HEIGHT16_9              = f_flag();
+
+    /**
+     * Minimum height 7/16 (0.4375). <br>
+     * Only applies with F_GROUND_HEIGHT set.
+     */
+    public static final long F_MIN_HEIGHT16_7               = f_flag();
+
+    /**
      * Minimum height 5/16 (0.3125). <br>
      * Only applies with F_GROUND_HEIGHT set.
      */
@@ -803,6 +824,12 @@ public class BlockProperties {
      * Only applies with F_GROUND_HEIGHT set.
      */
     public static final long F_MIN_HEIGHT4_1               = f_flag();
+
+    /**
+     * Minimum height 1/8 (0.125). <br>
+     * Only applies with F_GROUND_HEIGHT set.
+     */
+    public static final long F_MIN_HEIGHT8_1               = f_flag();
 
     /**
      * Minimum height 1/16 (0.0625). <br>
@@ -1028,7 +1055,7 @@ public class BlockProperties {
         // Step (ground + full width).
         final long stepFlags = F_GROUND | F_XZ100;
         for (final Material mat : new Material[]{
-                BridgeMaterial.STONE_SLAB, Material.SEA_PICKLE
+                BridgeMaterial.STONE_SLAB
         }) {
             setFlag(mat, stepFlags);
         }
@@ -1210,7 +1237,6 @@ public class BlockProperties {
                 BridgeMaterial.END_PORTAL_FRAME,
                 // XZ-bounds issues.
                 BridgeMaterial.CAKE,
-		BridgeMaterial.get("ANVIL"),
                 // Already worked around with isPassableWorkaround (kept for dev-reference).
                 //				Material.ANVIL,
                 //				Material.SKULL, Material.FLOWER_POT,
@@ -1241,10 +1267,6 @@ public class BlockProperties {
             }
         }
         for (final Material mat : MaterialUtil.INSTANT_PLANTS) {
-            setBlock(mat, instantType);
-        }
-        for (final Material mat : MaterialUtil.LIQUID_BLOCKS) {
-        	setFlag(mat, F_GROUND_HEIGHT | F_GROUND);
             setBlock(mat, instantType);
         }
         // Instant break and fully passable.
@@ -1371,7 +1393,6 @@ public class BlockProperties {
                 setBlock(mat,  woodType);
             }
         }
-        @SuppressWarnings("unchecked")
         final List<Set<Material>> woodTypes = Arrays.asList(
                 MaterialUtil.WOODEN_FENCE_GATES, MaterialUtil.WOODEN_FENCES,
                 MaterialUtil.WOODEN_STAIRS, MaterialUtil.WOODEN_SLABS,
@@ -1485,7 +1506,6 @@ public class BlockProperties {
                 setBlock(mat, indestructibleType); 
             }
         }
-        @SuppressWarnings("unchecked")
         final List<Set<Material>> indestructible = new LinkedList<Set<Material>>(Arrays.asList(
                 MaterialUtil.LAVA,
                 MaterialUtil.WATER
@@ -2627,6 +2647,7 @@ public class BlockProperties {
      * @return true, if is attached climbable
      */
     public static final boolean isAttachedClimbable(final Material id) {
+        if ((getBlockFlags(id) & F_CLIMBUPABLE) != 0) return false;
         return id == Material.VINE;
     }
 
@@ -3107,6 +3128,11 @@ public class BlockProperties {
             // (Allow checking further entries.)
             return true; 
         }
+        else if ((flags & F_THICK_WALL) != 0) {
+            if (!collidesFence(fx, fz, dX, dZ, dT, 0.26)) {
+                return true;
+            }
+        }
         else if ((flags & F_THICK_FENCE) != 0) {
             if (!collidesFence(fx, fz, dX, dZ, dT, 0.125)) {
                 return true;
@@ -3319,7 +3345,7 @@ public class BlockProperties {
                 return 0.5;
             }
         }
-        else if ((flags & F_THICK_FENCE) != 0) {
+        else if ((flags & F_THICK_FENCE) != 0 || (flags & F_THICK_WALL) != 0) {
             return Math.min(1.0, bounds[4]);
         }
         else if (id == Material.SOUL_SAND) {
@@ -3343,6 +3369,10 @@ public class BlockProperties {
                 // 1/16
                 return 0.0625;
             }
+            if ((flags & F_MIN_HEIGHT8_1) != 0) {
+                // 1/8
+                return 0.125;
+            }
             if ((flags & F_MIN_HEIGHT4_1) != 0) {
                 // 1/4
                 return 0.25;
@@ -3351,6 +3381,14 @@ public class BlockProperties {
                 // 5/16
                 return 0.3125;
             }
+            if ((flags & F_MIN_HEIGHT16_7) != 0) {
+                // 7/16
+                return 0.4375;
+            }
+            if ((flags & F_MIN_HEIGHT16_9) != 0) {
+                // 9/16
+                return 0.5625;
+            }
             if ((flags & F_MIN_HEIGHT16_11) != 0) {
                 // 11/16
                 return 0.6875;
@@ -3358,6 +3396,10 @@ public class BlockProperties {
             if ((flags & F_MIN_HEIGHT16_13) != 0) {
                 // 13/16
                 return 0.8125;
+            }
+            if ((flags & F_MIN_HEIGHT16_14) != 0) {
+                // 14/16
+                return 0.875;
             }
             if ((flags & F_MIN_HEIGHT16_15) != 0) {
                 // 15/16

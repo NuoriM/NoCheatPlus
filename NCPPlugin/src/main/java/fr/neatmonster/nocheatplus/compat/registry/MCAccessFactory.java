@@ -47,6 +47,16 @@ public class MCAccessFactory {
     public MCAccess getMCAccess(final MCAccessConfig config) {
         final List<Throwable> throwables = new ArrayList<Throwable>();
         MCAccess mcAccess = null;
+
+        // Bukkit API only: 1.13 (and possibly later).
+        // Prefer this because CB/NMS access is still not available for new spigot versions
+        try {
+            return new MCAccessBukkitModern();
+        }
+        catch(Throwable t) {
+            throwables.add(t);
+        }
+
         // Try to set up native access.
 
         // CraftBukkit (dedicated).
@@ -65,14 +75,6 @@ public class MCAccessFactory {
             catch (Throwable t) {
                 throwables.add(t);
             }
-        }
-
-        // Bukkit API only: 1.13 (and possibly later).
-        try {
-            return new MCAccessBukkitModern();
-        }
-        catch(Throwable t) {
-            throwables.add(t);
         }
 
         // Try to set up api-only access (since 1.4.6).
