@@ -904,11 +904,9 @@ public class SurvivalFly extends Check {
             // Does include sprinting by now (would need other accounting methods).
             hAllowedDistance = Magic.modWeb * thisMove.walkSpeed * cc.survivalFlyWalkingSpeed / 100D;
             friction = 0.0; // Ensure friction can't be used to speed.
-        }
-		else if (thisMove.to.onSoulSand && thisMove.from.onSoulSand) {
+        } else if (thisMove.to.onSoulSand && thisMove.from.onSoulSand) {
         	hAllowedDistance = Magic.modSoulSand * thisMove.walkSpeed * cc.survivalFlyWalkingSpeed / 100D;
-        }
-        else if (thisMove.from.inLiquid && thisMove.to.inLiquid) {
+        } else if (thisMove.from.inLiquid && thisMove.to.inLiquid) {
             // Check all liquids (lava might demand even slower speed though).
             // TODO: Test how to go with only checking from (less dolphins).
             // TODO: Sneaking and blocking applies to when in water !
@@ -923,22 +921,22 @@ public class SurvivalFly extends Check {
                 } else if (player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE)) {
                     // TODO: Allow for faster swimming above water with Dolhphins Grace
 				    hAllowedDistance *= Magic.modDolphinsGrace;
-            }   if (level > 0 && player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE)) {
-				hAllowedDistance *= Magic.modDepthStrider[level] * Magic.modDolphinsGrace * 4;
-              } if (player.isRiptiding() || (data.timeRiptiding + 3000 > now)) {
-				hAllowedDistance *= Magic.modRiptide;
+                }
+                if (level > 0 && player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE)) {
+				    hAllowedDistance *= Magic.modDepthStrider[level] * Magic.modDolphinsGrace * 4;
+                }
+                if (player.isRiptiding() || (data.timeRiptiding + 3000 > now)) {
+				    hAllowedDistance *= Magic.modRiptide;
 				}
 			}
             // (Friction is used as is.)
-	        } else if (data.newHDist && hAllowedDistance < 0.345D) {
-		      hAllowedDistance = 0.445D;
-			
+        } else if (player.isRiptiding() || (data.timeRiptiding + 3000 > now)) {
+            hAllowedDistance = Magic.modRiptide * thisMove.walkSpeed * cc.survivalFlySpeedingSpeed / 100D;
+        } else if (data.newHDist && hAllowedDistance < 0.345D) {
+            hAllowedDistance = 0.445D;
 		} else if (snowFix && hAllowedDistance < 0.377D) {
-		  hAllowedDistance = 0.377D;
-		}			
-		else if (player.isRiptiding() || (data.timeRiptiding + 3000 > now)) {
-        	hAllowedDistance = Magic.modRiptide * thisMove.walkSpeed * cc.survivalFlySpeedingSpeed / 100D;
-        }
+		    hAllowedDistance = 0.377D;
+		}
 		// Allows faster speed for player when swimming above water since from -> to does not seem to detect correctly
 		else if ((BlockProperties.isLiquid(from.getTypeIdBelow()) || BlockProperties.isNewLiq(from.getTypeIdBelow()) && player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE))) {
 			hAllowedDistance = Magic.modSwim * thisMove.walkSpeed * cc.survivalFlySwimmingSpeed * Magic.modDolphinsGrace / 100D;
