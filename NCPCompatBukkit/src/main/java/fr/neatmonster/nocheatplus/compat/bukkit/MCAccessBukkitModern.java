@@ -50,6 +50,7 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
     // Blocks that have a different shape, based on how they have been placed.
     private static final BukkitShapeModel MODEL_BAMBOO = new BukkitBamboo();
     private static final BukkitShapeModel MODEL_LANTERN = new BukkitLantern();
+    private static final BukkitShapeModel MODEL_BELL = new BukkitBell();
     private static final BukkitShapeModel MODEL_ANVIL = new BukkitAnvil();
     private static final BukkitShapeModel MODEL_SLAB = new BukkitSlab();
     private static final BukkitShapeModel MODEL_STAIRS= new BukkitStairs();
@@ -341,6 +342,10 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
         // Bamboo.
         Optional.ofNullable(BridgeMaterial.getBlock("bamboo"))
                 .ifPresent((mat) -> addModel(mat, MODEL_BAMBOO));
+
+        // Bell.
+        Optional.ofNullable(BridgeMaterial.getBlock("bell"))
+                .ifPresent((mat) -> addModel(mat, MODEL_BELL));
 
         // Sort to processed by flags.
         for (final Material mat : Material.values()) {
