@@ -48,6 +48,8 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
     private static final BukkitShapeModel MODEL_TURTLE_EGG = new BukkitTurtleEgg();
 
     // Blocks that have a different shape, based on how they have been placed.
+    private static final BukkitShapeModel MODEL_BAMBOO = new BukkitBamboo();
+    private static final BukkitShapeModel MODEL_LANTERN = new BukkitLantern();
     private static final BukkitShapeModel MODEL_ANVIL = new BukkitAnvil();
     private static final BukkitShapeModel MODEL_SLAB = new BukkitSlab();
     private static final BukkitShapeModel MODEL_STAIRS= new BukkitStairs();
@@ -77,8 +79,8 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
             0.25, 0.5); // TODO: XZ-really? 275 ?
     private static final BukkitShapeModel MODEL_SINGLE_CHEST = new BukkitStatic(
             0.062, .875); // TODO: 0.0625?
-    private static final BukkitShapeModel MODEL_LANTERN = new BukkitStatic(
-            0.33, 0.5625);
+    private static final BukkitShapeModel MODEL_LECTERN = new BukkitStatic(
+            0.25, 0.875);
 
     // Static blocks with full height sorted by inset.
     private static final BukkitShapeModel MODEL_INSET16_1_HEIGHT100 = new BukkitStatic(
@@ -328,9 +330,17 @@ public class MCAccessBukkitModern extends MCAccessBukkit {
         	addModel(mat, MODEL_CHORUS_PLANT);
         }
 
-        // Lantern
+        // Lantern.
         Optional.ofNullable(BridgeMaterial.getBlock("lantern"))
                 .ifPresent((mat) -> addModel(mat, MODEL_LANTERN));
+
+        // Lectern.
+        Optional.ofNullable(BridgeMaterial.getBlock("lectern"))
+                .ifPresent((mat) -> addModel(mat, MODEL_LECTERN));
+
+        // Bamboo.
+        Optional.ofNullable(BridgeMaterial.getBlock("bamboo"))
+                .ifPresent((mat) -> addModel(mat, MODEL_BAMBOO));
 
         // Sort to processed by flags.
         for (final Material mat : Material.values()) {
