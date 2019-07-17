@@ -14,6 +14,7 @@
  */
 package fr.neatmonster.nocheatplus.utilities.location;
 
+import fr.neatmonster.nocheatplus.compat.BridgeMaterial;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -33,7 +34,7 @@ import fr.neatmonster.nocheatplus.utilities.map.BlockProperties;
 public class RichEntityLocation extends RichBoundsLocation {
 
     // TODO: detect mc version with an utility method
-    private final boolean is1_14Above = BlockProperties.getMaterial("LECTERN") != null;
+    private final boolean is1_14Above = BridgeMaterial.getBlock("lectern") != null;
 
     /*
      * TODO: HumanEntity default with + height (1.11.2): elytra 0.6/0.6,
